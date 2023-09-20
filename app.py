@@ -1,25 +1,43 @@
-from flask import Flask,request, url_for, redirect, render_template
+from flask import Flask, render_template, request
 import pickle
 import numpy as np
 
+model = pickle.load(open('iri.pkl', 'rb'))
+
 app = Flask(__name__)
 
-model=pickle.load(open('model.pkl','rb'))
 
 
 @app.route('/')
-def hello_world():
-    return render_template("goldprice.html")
+def man():
+    return render_template('home.html')
 
 
-@app.route('/predict',methods=['POST','GET'])
-def predict():
-    int_features=[x for x in request.form.values()]
-    final=[np.array(int_features)]
-    print(int_features)
-    print(final)
-    prediction=model.predict(final)
-    output='{}'.format(prediction)
-    return render_template('goldprice.html',pred='Predicted price of gold is {}'.format(output),bhai="kuch karna hain iska ab?")
-if __name__ == '__main__':
+@app.route('/predict', methods=['POST'])
+def home():
+    data1 = request.form['a']
+    data2 = request.form['b']
+    data3 = request.form['c']
+    data4 = request.form['d']
+    arr = np.array([[data1, data2, data3, data4]])
+    pred = model.predict(arr)
+    return render_template('after.html', data=pred)
+
+
+if __name__ == "__main__":
     app.run(debug=True)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
